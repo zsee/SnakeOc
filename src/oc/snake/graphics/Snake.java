@@ -13,14 +13,13 @@ public class Snake extends Drawable implements Updateable {
 	protected List<SnakeElement> elements;
 	protected Vector2D direction = new Vector2D();
 	protected Vector2D target = new Vector2D();
-	protected float speed = 1;
 	
 	public float getSpeed() {
-		return speed;
+		return getHead().getSpeed();
 	}
 	
 	public void setSpeed(float s) {
-		this.speed = s;
+		getHead().setSpeed(s);
 	}
 	
 	public Vector2D getDirection() {
@@ -31,6 +30,10 @@ public class Snake extends Drawable implements Updateable {
 		return elements.get(elements.size()-1);
 	}
 	
+	public Vector2D getHeadPosition() {
+		return elements.get(elements.size()-1).getPosition();
+	}
+	
 	public Snake() {
 		elements = new ArrayList<SnakeElement>();
 		int i;
@@ -38,7 +41,7 @@ public class Snake extends Drawable implements Updateable {
 		SnakeElement n;
 		e.setBeforePoint(new Vector2D(10,10));
 		elements.add(e);
-		for (i=0; i<20; i++) {
+		for (i=0; i<300; i++) {
 			n = new SnakeElement();
 			n.setBeforePoint(e.getPosition());
 			elements.add(n);
@@ -56,7 +59,7 @@ public class Snake extends Drawable implements Updateable {
 	@Override
 	public void update(long elapsedTime) {
 		SnakeElement b,c;
-		direction.setModulus(speed);
+		direction.normalize();
 		int i=elements.size() - 1;
 		b = elements.get(i--);
 		b.getDirection().setRotationVector(direction);

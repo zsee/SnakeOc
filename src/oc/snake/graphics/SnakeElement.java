@@ -25,6 +25,7 @@ class SnakeElement extends Drawable
 	private Vector2D position = new Vector2D(200,200);
 	private Paint paint = new Paint();
 	private Vector2D direction = new Vector2D(-1,0);
+	private float speed = 1;
 	
 	public SnakeElement() {
 		paint.setARGB(255,0,120,0);
@@ -33,6 +34,14 @@ class SnakeElement extends Drawable
 	
 	public Vector2D getDirection() {
 		return direction;
+	}
+	
+	public void setSpeed(float s) {
+		speed = s;
+	}
+	
+	public float getSpeed() {
+		return speed;
 	}
 	
 	public Vector2D getPosition() {
@@ -88,7 +97,7 @@ class SnakeElement extends Drawable
 	 */
 	@Override
 	public void update(long elapsedTime) {
-		position.x += direction.x * elapsedTime/1000.0;
-		position.y += direction.y * elapsedTime/1000.0;
+		position.x += direction.x * speed * elapsedTime/1000.0;
+		position.y += direction.y * speed * elapsedTime/1000.0;
 	}
 }
