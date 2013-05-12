@@ -1,6 +1,7 @@
 package oc.snake.game;
 
 import oc.snake.graphics.Snake;
+import android.R;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.hardware.Sensor;
@@ -44,7 +45,12 @@ public class SnakeGame extends Game {
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
+		canvas.drawColor(R.color.black);
+		canvas.save();
+		canvas.scale((float)canvas.getWidth()/1280, (float)canvas.getHeight()/800);
+		canvas.drawRGB(255, 255, 255);
 		snake.draw(canvas);
+		canvas.restore();
 	}
 
 	@Override

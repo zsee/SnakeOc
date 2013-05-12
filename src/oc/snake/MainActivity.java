@@ -9,6 +9,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -22,6 +24,9 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		sm = (SensorManager) getSystemService(SENSOR_SERVICE);
 		o = sm.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+		//requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+        //                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		view = (SnakeGame) findViewById(R.id.VIEW1);
 		view.start();
 	}
