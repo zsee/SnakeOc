@@ -1,4 +1,4 @@
-package oc.snake.graphics;
+package oc.snake.game.elements;
 
 import java.util.List;
 
@@ -26,6 +26,15 @@ class SnakeElement extends Drawable
 	private Paint paint = new Paint();
 	private Vector2D direction = new Vector2D(-1,0);
 	private float speed = 1;
+	
+	public Rect getBoundingBox() {
+		int ms = Math.min(SizeX, Math.min(SizeY, Distance)) / 3;
+		int mx = (int) this.position.x - ms;
+		int my = (int) this.position.y - ms;
+		int Mx = (int) this.position.x + ms;
+		int My = (int) this.position.y + ms;
+		return new Rect( mx, my, Mx, My );
+	}
 	
 	public SnakeElement() {
 		paint.setARGB(255,0,120,0);

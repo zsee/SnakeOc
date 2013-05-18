@@ -1,29 +1,17 @@
 package oc.snake;
 
 import oc.snake.game.SnakeGame;
-import oc.snake.graphics.SnakeView;
 import android.app.Activity;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	private SnakeGame view;
-	protected SensorManager sm;
-	protected Sensor o;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		sm = (SensorManager) getSystemService(SENSOR_SERVICE);
-		o = sm.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 		//requestWindowFeature(Window.FEATURE_NO_TITLE);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         //                        WindowManager.LayoutParams.FLAG_FULLSCREEN);

@@ -1,6 +1,7 @@
 package oc.snake.game;
 
-import oc.snake.graphics.Snake;
+import oc.snake.exceptions.SnakeHitSelfException;
+import oc.snake.game.elements.Snake;
 import android.R;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,6 +10,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 public class SnakeGame extends Game {
 	
@@ -24,6 +26,10 @@ public class SnakeGame extends Game {
 		o = sm.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 		snake.setSpeed(100);
 		snake.getHeadPosition().set(100,100);
+	}
+	
+	public Snake getSnake() {
+		return snake;
 	}
 
 	@Override
@@ -57,13 +63,22 @@ public class SnakeGame extends Game {
 	public void updateState(long time) {
 		// TODO Auto-generated method stub
 		snake.getDirection().set(dir);
-		snake.update(time);
+		try {
+			snake.update(time);
+		} catch(SnakeHitSelfException e) {
+			this.pause();
+		}
 	}
 
 	@Override
 	public void handleInput() {
 		// TODO Auto-generated method stub
-		
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		snake.grow();
+		return super.onTouchEvent(event);
 	}
 	
 	protected SensorEventListener myListener = new SensorEventListener() {
