@@ -4,17 +4,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oc.snake.exceptions.SnakeHitSelfException;
+import oc.snake.game.Collidable;
 import oc.snake.game.Updateable;
 import oc.snake.game.Vector2D;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
-public class Snake extends Drawable implements Updateable {
+public class Snake extends Drawable
+	implements
+		Updateable,
+		Collidable
+{
 	protected List<SnakeElement> elements;
-	protected Vector2D direction = new Vector2D();
-	protected Vector2D target = new Vector2D();
+	protected Vector2D direction = new Vector2D(1,0);
+	
+	
+	public Snake(Vector2D position, int size) {
+		elements = new ArrayList<SnakeElement>(size);
+		int i;
+		SnakeElement n;
+		for (i=0; i<size; i++) {
+			n = new SnakeElement();
+			n.setBeforePoint(new Vector2D(position.x-size+i*30, position.y));
+			elements.add(n);
+		}
+		try {
+			update(0);
+		} catch (Exception ex) {
+			Log.i("snake","Error on init");
+		}
+	}
+	
+	public Snake(Vector2D position) {
+		this(position, 5);
+	}
+	
+	public Snake(int size) {
+		this(new Vector2D(100,100), size);
+	}
+	
+	public Snake() {
+		this(5);
+	}
+
 	
 	public List<SnakeElement> getElements() {
 		return elements;
@@ -49,21 +84,6 @@ public class Snake extends Drawable implements Updateable {
 	public Vector2D getHeadPosition() {
 		return elements.get(elements.size()-1).getPosition();
 	}
-	
-	public Snake() {
-		elements = new ArrayList<SnakeElement>();
-		int i;
-		SnakeElement e = new SnakeElement();
-		SnakeElement n;
-		e.setBeforePoint(new Vector2D(10,10));
-		elements.add(e);
-		for (i=0; i<5; i++) {
-			n = new SnakeElement();
-			n.setBeforePoint(e.getPosition());
-			elements.add(n);
-			e = n;
-		}
-	}
 
 	@Override
 	public void draw(Canvas canvas) {
@@ -80,6 +100,7 @@ public class Snake extends Drawable implements Updateable {
 		int i=elements.size() - 1;
 		b = elements.get(i--);
 		b.getDirection().setRotationVector(direction);
+		//b.getDirection().normalize();
 		b.update(elapsedTime);
 		headbox = b.getBoundingBox();
 		for (; i>=0; i--) {
@@ -87,7 +108,7 @@ public class Snake extends Drawable implements Updateable {
 			c.follow(b.getPosition());
 			c.setBeforePoint(b.getPosition());
 			//c.update(elapsedTime);
-			if (headbox.intersect(c.getBoundingBox())) {
+			if (Rect.intersects(headbox,c.getBoundingBox()) && elapsedTime != 0) {
 				throw new SnakeHitSelfException();
 			}
 			b = c;
@@ -110,6 +131,20 @@ public class Snake extends Drawable implements Updateable {
 	public void setColorFilter(ColorFilter cf) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public Rect getBoundingBox() {
+		return getHead().getBoundingBox();
+	}
+
+	@Override
+	public List<Rect> getBoundingBoxes() {
+		List<Rect> l = new ArrayList<Rect>();
+		for(SnakeElement e : elements) {
+			l.add(e.getBoundingBox());
+		}
+		return l;
 	}
 
 }

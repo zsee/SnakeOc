@@ -1,5 +1,6 @@
 package oc.snake.game.elements;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import oc.snake.game.Collidable;
@@ -8,12 +9,13 @@ import oc.snake.game.Vector2D;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
 
-class SnakeElement extends Drawable
+public class SnakeElement extends Drawable
 	implements
 		Collidable,
 		Updateable
@@ -24,7 +26,7 @@ class SnakeElement extends Drawable
 	
 	private Vector2D position = new Vector2D(200,200);
 	private Paint paint = new Paint();
-	private Vector2D direction = new Vector2D(-1,0);
+	private Vector2D direction = new Vector2D(1,0);
 	private float speed = 1;
 	
 	public Rect getBoundingBox() {
@@ -38,7 +40,7 @@ class SnakeElement extends Drawable
 	
 	public SnakeElement() {
 		paint.setARGB(255,0,120,0);
-		direction.set(1, 1);
+		//direction.set(1, 1);
 	}
 	
 	public Vector2D getDirection() {
@@ -71,15 +73,6 @@ class SnakeElement extends Drawable
 	}
 	
 	@Override
-	public List<Rect> getAreas() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void onCollision(Collidable o) { }
-
-	@Override
 	public void draw(Canvas canvas) {
 		canvas.save();
 		canvas.rotate(direction.getDirectionDegrees(),position.x, position.y);
@@ -93,7 +86,7 @@ class SnakeElement extends Drawable
 	}
 
 	@Override
-	public int getOpacity() {return 0;}
+	public int getOpacity() {return PixelFormat.UNKNOWN;}
 
 	@Override
 	public void setAlpha(int arg0) {}
@@ -108,5 +101,12 @@ class SnakeElement extends Drawable
 	public void update(long elapsedTime) {
 		position.x += direction.x * speed * elapsedTime/1000.0;
 		position.y += direction.y * speed * elapsedTime/1000.0;
+	}
+
+	@Override
+	public List<Rect> getBoundingBoxes() {
+		List<Rect> l = new LinkedList<Rect>();
+		l.add(getBoundingBox());
+		return l;
 	}
 }
