@@ -98,7 +98,7 @@ public class SnakeElement extends Drawable
 	 * Update the part
 	 */
 	@Override
-	public void update(long elapsedTime) {
+	public void update(long elapsedTime, Object gameState) {
 		position.x += direction.x * speed * elapsedTime/1000.0;
 		position.y += direction.y * speed * elapsedTime/1000.0;
 	}

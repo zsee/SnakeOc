@@ -1,4 +1,4 @@
-package oc.snake.exceptions;
+package oc.snake.game.exceptions;
 
 public class SnakeHitSelfException extends Exception {
 

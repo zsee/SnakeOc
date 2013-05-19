@@ -1,9 +1,11 @@
 package oc.snake.game.elements;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import oc.snake.game.Collidable;
+import oc.snake.game.SnakeGameState;
 import oc.snake.game.Updateable;
 import oc.snake.game.Vector2D;
 import android.graphics.Canvas;
@@ -48,16 +50,55 @@ public class Food extends Drawable implements Collidable, Updateable {
 		return generatedPosition;
 	}
 	
+	public void eat(SnakeGameState s) {
+		eatTime = 0;
+		position.set(-100,-100);
+		Snake snake = s.getSnake();
+		snake.grow();
+		snake.setSpeed(snake.getSpeed() + s.getSpeedIncrease());
+		reposition(s);
+	}
+	
+	public void reposition(SnakeGameState s) {
+		// calculate new position for food, but do not place it on top of the walls or the snake
+		Snake snake = s.getSnake();
+		List<Rect> a = new LinkedList<Rect>();
+		a.addAll(snake.getBoundingBoxes());
+		List<Wall> wl = new LinkedList<Wall>();
+		wl.addAll(s.getWalls());
+		//wl.addAll(s.getMovingWalls());
+		for (Wall w : wl) {
+			a.add(w.getBoundingBox());
+		}
+		boolean ok = false;
+		Rect r;
+		while (!ok) {
+			ok = true;
+			r = generatePosition();
+			for (Rect x : a) {
+				if (Rect.intersects(x, r)) {
+					ok = false;
+					break;
+				}
+			}
+		}
+	}
+	
 	@Override
-	public void update(long elapsedTtime) throws Exception {
+	public void update(long elapsedTtime, Object gameState) throws Exception {
 		if (eatTime > appearTime) {
 			position.set(generatedPosition);
+			SnakeGameState state = (SnakeGameState) gameState;
+			Rect snakeHead = state.getSnake().getHead().getBoundingBox();
+			if (Rect.intersects(snakeHead, getBoundingBox())) {
+				state.pickUpFood();
+			}
 		} else {
 			eatTime += elapsedTtime;
 		}
 	}
 	
-	public Rect generatePosition() {
+	protected Rect generatePosition() {
 		generatedPosition.x = (float) (Math.random() * 1280);
 		generatedPosition.y = (float) (Math.random() * 800);
 		return new Rect(
@@ -68,11 +109,6 @@ public class Food extends Drawable implements Collidable, Updateable {
 			);
 	}
 	
-	public void eat() {
-		eatTime = 0;
-		position.set(-100,-100);
-	}
-
 	@Override
 	public Rect getBoundingBox() {
 		return new Rect(

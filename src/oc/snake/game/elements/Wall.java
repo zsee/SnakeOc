@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oc.snake.game.Collidable;
+import oc.snake.game.SnakeGameState;
+import oc.snake.game.Updateable;
 import oc.snake.game.Vector2D;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
@@ -11,7 +13,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-public class Wall extends Drawable implements Collidable
+public class Wall extends Drawable
+	implements
+		Collidable,
+		Updateable
 {
 	protected Vector2D size = new Vector2D(20,20);
 	protected Vector2D position = new Vector2D();
@@ -80,6 +85,18 @@ public class Wall extends Drawable implements Collidable
 		List<Rect> l = new ArrayList<Rect>();
 		l.add(getBoundingBox());
 		return l;
+	}
+
+	@Override
+	public void update(long elapsedTtime, Object gameState) throws Exception {
+		SnakeGameState state = (SnakeGameState) gameState;
+		Rect pos = getBoundingBox();
+		for (SnakeElement e : state.getSnake().getElements()) {
+			if (Rect.intersects(pos, e.getBoundingBox())) {
+				state.hitWall();
+				break; // only hit the wall once
+			}
+		}
 	}
 
 }

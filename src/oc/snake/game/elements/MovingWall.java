@@ -31,7 +31,8 @@ public class MovingWall extends Wall implements Updateable {
 	}
 
 	@Override
-	public void update(long elapsedTime) throws Exception {
+	public void update(long elapsedTime, Object gameState) throws Exception {
+		super.update(elapsedTime, gameState);
 		float d = (float) (elapsedTime / 1000.0);
 		float dx = speed.x * d;
 		float dy = speed.y * d;
