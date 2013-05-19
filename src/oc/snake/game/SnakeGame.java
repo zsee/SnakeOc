@@ -128,6 +128,7 @@ public class SnakeGame extends Game {
 	    private float[] mLastMagnetometer = new float[3];
 	    private float[] mOrientation = new float[3];
 	    private float[] mR = new float[9];
+	    private float[] mRotatedR = new float[9];
 		
 		@Override
 		public void onSensorChanged(SensorEvent event) {
@@ -140,9 +141,11 @@ public class SnakeGame extends Game {
 	        }
 	        if (mLastAccelerometerSet && mLastMagnetometerSet) {
 	            SensorManager.getRotationMatrix(mR, null, mLastAccelerometer, mLastMagnetometer);
-	            SensorManager.getOrientation(mR, mOrientation);
+	            SensorManager.remapCoordinateSystem(mR, SensorManager.AXIS_MINUS_X, SensorManager.AXIS_MINUS_Y, mRotatedR);
+	            SensorManager.getOrientation(mRotatedR, mOrientation);
 	            if (mOrientation[1] != 0 || mOrientation[2] != 0) {
-	            	gameState.getSnake().getDirection().set(-mOrientation[1],-mOrientation[2]);
+	            	gameState.getSnake().getDirection().set(mOrientation[1],mOrientation[2]);
+	            	//Log.i("sensor", mOrientation[1] + ", "+mOrientation[2]);
 	            }
 	        }
 	    }
