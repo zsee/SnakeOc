@@ -1,9 +1,13 @@
 package oc.snake.game;
 
+import oc.snake.game.elements.Mouse;
 import oc.snake.game.elements.MovingWall;
+import oc.snake.game.elements.PowerUp;
 import oc.snake.game.elements.Wall;
 import oc.snake.game.exceptions.SnakeHitSelfException;
 import android.content.Context;
+import android.content.SyncResult;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -16,8 +20,10 @@ import android.view.MotionEvent;
 public class SnakeGame extends Game {
 	
 	protected SensorManager sm;
-	protected Sensor sensAcc, sensMagn;
+	protected Sensor sensAcc, sensMagn, sensRot;
 	protected SnakeGameState gameState;
+	protected Context context;
+	
 
 	public SnakeGame(Context context, AttributeSet atr) {
 		super(context, atr);
@@ -28,6 +34,16 @@ public class SnakeGame extends Game {
 		sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		sensAcc = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		sensMagn = sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		sensRot = sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+		
+		this.context = context;
+		gameState.context = context;
+	}
+	
+	public static boolean isTablet(Context context) {
+	    return (context.getResources().getConfiguration().screenLayout
+	            & Configuration.SCREENLAYOUT_SIZE_MASK)
+	            >= Configuration.SCREENLAYOUT_SIZE_LARGE;
 	}
 
 	@Override
@@ -43,8 +59,8 @@ public class SnakeGame extends Game {
 
 	@Override
 	protected void onResume() {
-		sm.registerListener(myListener, sensAcc, SensorManager.SENSOR_DELAY_GAME);
-		sm.registerListener(myListener, sensMagn, SensorManager.SENSOR_DELAY_GAME);
+		sm.registerListener(myListener, sensAcc, SensorManager.SENSOR_DELAY_UI);
+		sm.registerListener(myListener, sensMagn, SensorManager.SENSOR_DELAY_UI);
 	}
 	
 	@Override
@@ -62,6 +78,9 @@ public class SnakeGame extends Game {
 		for (MovingWall w : gameState.getMovingWalls()) {
 			w.draw(canvas);
 		}
+		for (PowerUp p : gameState.getPowerUps()) {
+			p.draw(canvas);
+		}
 		canvas.restore();
 	}
 
@@ -72,20 +91,32 @@ public class SnakeGame extends Game {
 		if (gameState.getSituation() != s ) {
 			Log.i("Situation changed", gameState.getSituation().toString());
 		}
-		switch (gameState.getSituation()) {
+		s = gameState.getSituation();
+		switch (s) {
+			case Starting:
+				this.pause();
+				try {
+					Thread.sleep(800);
+				} catch (Exception e) {}
+				gameState.setSituation(GameSituation.Playing);
+				this.resume();
+				break;
 			case Dead:
 				this.pause();
 				gameState.restartLevel();
-				gameState.setSituation(GameSituation.Playing);
+				gameState.setSituation(GameSituation.Starting);
 				try {
-					Thread.sleep(500);
+					Thread.sleep(800);
 				} catch (Exception e) {}
 				this.resume();
 				break;
 			case CompletedLevel:
 				this.pause();
 				gameState.loadLevel(gameState.getLevelNum()+1);
-				gameState.setSituation(GameSituation.Playing);
+				gameState.setSituation(GameSituation.Starting);
+				try {
+					Thread.sleep(800);
+				} catch (Exception e) {}
 				this.resume();
 				break;
 			case CompletedGame:
@@ -95,16 +126,18 @@ public class SnakeGame extends Game {
 				this.pause();
 				break;
 		}
-		s = gameState.getSituation();
 		try {
 			gameState.getSnake().update(time, gameState);
+			gameState.getFood().update(time, gameState);
 			for (Wall w : gameState.getWalls()) {
 				w.update(time, gameState);
 			}
 			for (MovingWall w : gameState.getMovingWalls()) {
 				w.update(time, gameState);
 			}
-			gameState.getFood().update(time, gameState);
+			for (PowerUp p : gameState.getPowerUps()) {
+				p.update(time, gameState);
+			}
 			gameState.getPortal().update(time, gameState);
 		} catch(SnakeHitSelfException e) {
 		} catch(Exception e) {}
@@ -117,7 +150,7 @@ public class SnakeGame extends Game {
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		gameState.getSnake().grow();
+		gameState.getSnake().grow(1);
 		return super.onTouchEvent(event);
 	}
 	
@@ -144,8 +177,15 @@ public class SnakeGame extends Game {
 	            SensorManager.remapCoordinateSystem(mR, SensorManager.AXIS_MINUS_X, SensorManager.AXIS_MINUS_Y, mRotatedR);
 	            SensorManager.getOrientation(mRotatedR, mOrientation);
 	            if (mOrientation[1] != 0 || mOrientation[2] != 0) {
-	            	gameState.getSnake().getDirection().set(mOrientation[1],mOrientation[2]);
-	            	//Log.i("sensor", mOrientation[1] + ", "+mOrientation[2]);
+	            	Vector2D dir = gameState.getSnake().getDirection();
+	            	synchronized(dir) {
+	            		if (isTablet(context)) {
+	            			dir.set(-mOrientation[2],mOrientation[1]);
+	            		} else {
+	            			dir.set(mOrientation[1],mOrientation[2]);
+	            		}
+	            	}
+	            	//Log.i("sensor", mOrientation[0] + ", " + mOrientation[1] + ", "+mOrientation[2]);
 	            }
 	        }
 	    }

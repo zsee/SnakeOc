@@ -18,7 +18,7 @@ public class Food extends Drawable implements Collidable, Updateable {
 	protected Paint paint = new Paint();
 	protected Vector2D position = new Vector2D(-100,-100);
 	protected Vector2D generatedPosition = new Vector2D(-100,-100);
-	protected int appearTime = 8000;
+	protected int appearTime = 2000;
 	protected int eatTime = appearTime + 1;
 	protected int radius = 10;
 
@@ -54,7 +54,7 @@ public class Food extends Drawable implements Collidable, Updateable {
 		eatTime = 0;
 		position.set(-100,-100);
 		Snake snake = s.getSnake();
-		snake.grow();
+		snake.grow(2);
 		snake.setSpeed(snake.getSpeed() + s.getSpeedIncrease());
 		reposition(s);
 	}

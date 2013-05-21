@@ -21,7 +21,8 @@ public class Wall extends Drawable
 	protected Vector2D size = new Vector2D(20,20);
 	protected Vector2D position = new Vector2D();
 	protected Paint paint;
-	
+	protected boolean snakeHitDetect = true;
+
 	public Wall(Rect r) {
 		this();
 		position.x = r.left;
@@ -34,6 +35,15 @@ public class Wall extends Drawable
 		paint = new Paint();
 		paint.setARGB(128, 255, 0, 0);
 	}
+	
+	public void setSnakeHitDetection(boolean b) {
+		snakeHitDetect = b;
+	}
+	
+	public boolean getSnakeHitDetection() {
+		return snakeHitDetect;
+	}
+	
 	
 	public Paint getPaint() {
 		return paint;
@@ -54,20 +64,15 @@ public class Wall extends Drawable
 
 	@Override
 	public int getOpacity() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void setAlpha(int alpha) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void setColorFilter(ColorFilter cf) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -91,10 +96,12 @@ public class Wall extends Drawable
 	public void update(long elapsedTtime, Object gameState) throws Exception {
 		SnakeGameState state = (SnakeGameState) gameState;
 		Rect pos = getBoundingBox();
-		for (SnakeElement e : state.getSnake().getElements()) {
-			if (Rect.intersects(pos, e.getBoundingBox())) {
-				state.hitWall();
-				break; // only hit the wall once
+		if (snakeHitDetect) {
+			for (SnakeElement e : state.getSnake().getElements()) {
+				if (Rect.intersects(pos, e.getBoundingBox())) {
+					state.hitWall();
+					break; // only hit the wall once
+				}
 			}
 		}
 	}

@@ -63,11 +63,16 @@ public class SnakeElement extends Drawable
 		Vector2D dir = direction.toNormalizedVector();
 		dir.setModulus(Distance);
 		dir.invert();
-		position.set(p.x+dir.x, p.y+dir.y);
+		synchronized(p) {
+			position.set(p.x+dir.x, p.y+dir.y);
+		}
 	}
 
 	public void follow(Vector2D p) {
-		Vector2D dir = new Vector2D(position, p);
+		Vector2D dir;
+		synchronized(p) {
+			dir = new Vector2D(position, p);
+		}
 		dir.normalize();
 		direction.setRotationVector(dir);
 	}

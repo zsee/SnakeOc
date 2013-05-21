@@ -56,13 +56,26 @@ public class Snake extends Drawable
 		return elements;
 	}
 	
+	public void grow(int num) {
+			SnakeElement head = this.getHead();
+			SnakeElement n = elements.get(elements.size()-2);
+			Vector2D d = new Vector2D( n.getPosition(), head.getPosition() );
+			elements.remove(elements.size()-1);
+			int i = 0;
+			while (i != num) {
+				SnakeElement nw = new SnakeElement();
+				nw.getPosition().set(n.getPosition().x + d.x/2, n.getPosition().y + num * d.y/2);
+				nw.follow(head.getPosition());
+				head.getPosition().set(head.getPosition().x + d.x/2, head.getPosition().y + d.y/2);
+				elements.add(nw);
+				//elements.add(head);
+				i++;
+			}
+			elements.add(head);
+	}
+	
 	public void grow() {
-		SnakeElement e = this.getHead();
-		SnakeElement n = new SnakeElement();
-		n.setBeforePoint(elements.get(elements.size()-2).getPosition());
-		n.follow(e.getPosition());
-		elements.set(elements.size()-1, n);
-		elements.add(e);
+		grow(1);
 	}
 	
 	public float getSpeed() {

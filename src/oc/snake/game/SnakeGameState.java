@@ -4,18 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oc.snake.game.elements.Food;
+import oc.snake.game.elements.Ghost;
 import oc.snake.game.elements.MovingWall;
 import oc.snake.game.elements.Portal;
+import oc.snake.game.elements.PowerUp;
 import oc.snake.game.elements.Snake;
 import oc.snake.game.elements.Wall;
 import oc.snake.game.levels.Level;
 import oc.snake.game.levels.LevelFactory;
+import android.content.Context;
 import android.graphics.Rect;
 
 public class SnakeGameState {
 	protected Snake snake;
 	protected List<Wall> walls = new ArrayList<Wall>();
 	protected List<MovingWall> movingWalls = new ArrayList<MovingWall>();
+	protected List<PowerUp> powerups = new ArrayList<PowerUp>();
 	protected Wall gate;
 	protected Portal portal;
 	protected Food food;
@@ -24,11 +28,21 @@ public class SnakeGameState {
 	protected int foodPickedUp = 0;
 	protected Vector2D direction;
 	
+	protected Context context;
+	
 	protected GameSituation situation = GameSituation.Playing;
 	
 	protected int speedIncrease = 20;
 	
 	protected int levelNum;
+	
+	public Context getContext() {
+		return context;
+	}
+	
+	public void setContext(Context c) {
+		context = c;
+	}
 	
 	public void setSituation(GameSituation s) {
 		situation = s;
@@ -67,10 +81,10 @@ public class SnakeGameState {
 		food.eat(this);
 		if (foodPickedUp == numfood) {
 			//situation = GameSituation.CompletedLevel;
-			gate.getPosition().set(-1000,-1000);
+			gate.getPosition().set(-100,-100);
 			// no new food
-			food.getGeneratedPosition().set(-1000,-1000);
-			food.getPosition().set(-1000,-1000);
+			food.getGeneratedPosition().set(-100,-100);
+			food.getPosition().set(-100,-100);
 		}
 	}
 	
@@ -104,6 +118,9 @@ public class SnakeGameState {
 	public void setMovingWalls(List<MovingWall> l) {movingWalls = l;}
 	public List<MovingWall> getMovingWalls() {return movingWalls;}
 	
+	public void setPowerUps(List<PowerUp> l) {powerups = l;}
+	public List<PowerUp> getPowerUps() {return powerups;}
+	
 	
 	public void newGameInit() {
 		lives = 3;
@@ -111,6 +128,13 @@ public class SnakeGameState {
 	}
 	
 	public void init() {
+		powerups.clear();
+		//
+		PowerUp g = new Ghost();
+		g.setAppearFoodNumber(1);
+		g.setAppearTime(200);
+		powerups.add(g);
+		//
 		portal = new Portal();
 		walls.clear();
 		movingWalls.clear();

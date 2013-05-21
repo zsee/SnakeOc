@@ -5,5 +5,6 @@ public enum GameSituation {
 	Dead,
 	GameOver,
 	CompletedLevel,
-	CompletedGame
+	CompletedGame,
+	Starting
 }
