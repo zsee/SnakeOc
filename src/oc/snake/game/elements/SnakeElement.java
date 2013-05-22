@@ -20,14 +20,14 @@ public class SnakeElement extends Drawable
 		Collidable,
 		Updateable
 {
-	private static int SizeX = 25;
-	private static int SizeY = 12;
-	private static int Distance = 10;
+	protected static int SizeX = 25;
+	protected static int SizeY = 12;
+	protected static int Distance = 10;
 	
-	private Vector2D position = new Vector2D(200,200);
-	private Paint paint = new Paint();
-	private Vector2D direction = new Vector2D(1,0);
-	private float speed = 1;
+	protected Vector2D position = new Vector2D(200,200);
+	protected Paint paint = new Paint();
+	protected Vector2D direction = new Vector2D(1,0);
+	protected float speed = 1;
 	
 	public Rect getBoundingBox() {
 		int ms = Math.min(SizeX, Math.min(SizeY, Distance)) / 3;

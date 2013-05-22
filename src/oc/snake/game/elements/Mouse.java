@@ -1,12 +1,8 @@
 package oc.snake.game.elements;
 
 import oc.snake.game.SnakeGameState;
-import oc.snake.game.Vector2D;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 
 /**
  * Mouse - adds one life

@@ -1,12 +1,10 @@
 package oc.snake.game;
 
-import oc.snake.game.elements.Mouse;
 import oc.snake.game.elements.MovingWall;
 import oc.snake.game.elements.PowerUp;
 import oc.snake.game.elements.Wall;
 import oc.snake.game.exceptions.SnakeHitSelfException;
 import android.content.Context;
-import android.content.SyncResult;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.hardware.Sensor;
@@ -17,19 +15,21 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 
-public class SnakeGame extends Game {
+public class SnakeGameView extends GameView {
 	
 	protected SensorManager sm;
 	protected Sensor sensAcc, sensMagn, sensRot;
 	protected SnakeGameState gameState;
 	protected Context context;
+	private Object drawLock = new Object();
+	protected Menu menu = new Menu();
 	
 
-	public SnakeGame(Context context, AttributeSet atr) {
+	public SnakeGameView(Context context, AttributeSet atr) {
 		super(context, atr);
 		gameState = new SnakeGameState();
 		gameState.newGameInit();
-		gameState.loadLevel(1);
+		//gameState.loadLevel(2);
 		
 		sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		sensAcc = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -38,6 +38,20 @@ public class SnakeGame extends Game {
 		
 		this.context = context;
 		gameState.context = context;
+		
+		gameState.setSituation(GameSituation.AtMenu);
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		if (gameState.getSituation() == GameSituation.AtMenu) {
+			menu.onTouch(event.getX(), event.getY());
+		}
+		return super.onTouchEvent(event);
+	}
+	
+	public void setLevel(int level) {
+		gameState.loadLevel(level);
 	}
 	
 	public static boolean isTablet(Context context) {
@@ -65,93 +79,102 @@ public class SnakeGame extends Game {
 	
 	@Override
 	public void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		canvas.save();
-		canvas.scale((float)canvas.getWidth()/1280, (float)canvas.getHeight()/800);
-		canvas.drawRGB(255, 255, 255);
-		gameState.getSnake().draw(canvas);
-		gameState.getFood().draw(canvas);
-		gameState.getPortal().draw(canvas);
-		for (Wall w : gameState.getWalls()) {
-			w.draw(canvas);
+		synchronized (drawLock) {
+			canvas.save();
+			canvas.scale((float)canvas.getWidth()/1280, (float)canvas.getHeight()/800);
+			if (gameState.getSituation() == GameSituation.AtMenu) {
+				menu.draw(canvas);
+			} else {
+				super.onDraw(canvas);
+				canvas.drawRGB(255, 255, 255);
+				for (Wall w : gameState.getWalls()) {
+					w.draw(canvas);
+				}
+				for (MovingWall w : gameState.getMovingWalls()) {
+					w.draw(canvas);
+				}
+				for (PowerUp p : gameState.getPowerUps()) {
+					p.draw(canvas);
+				}
+				gameState.getSnake().draw(canvas);
+				gameState.getFood().draw(canvas);
+				gameState.getPortal().draw(canvas);
+			}
+			canvas.restore();
 		}
-		for (MovingWall w : gameState.getMovingWalls()) {
-			w.draw(canvas);
-		}
-		for (PowerUp p : gameState.getPowerUps()) {
-			p.draw(canvas);
-		}
-		canvas.restore();
 	}
 
 	GameSituation s = GameSituation.CompletedGame;
 	
 	@Override
 	public void updateState(long time) {
-		if (gameState.getSituation() != s ) {
-			Log.i("Situation changed", gameState.getSituation().toString());
+		synchronized (drawLock) {
+			if (gameState.getSituation() == GameSituation.AtMenu) {
+				try {
+					menu.update(time, gameState);
+				} catch (Exception e) {
+				}
+			} else {
+				if (gameState.getSituation() != s ) {
+					Log.i("Situation changed", gameState.getSituation().toString());
+				}
+				s = gameState.getSituation();
+				switch (s) {
+				case Starting:
+					this.pause();
+					try {
+						Thread.sleep(800);
+					} catch (Exception e) {}
+					gameState.setSituation(GameSituation.Playing);
+					this.resume();
+					break;
+				case Dead:
+					this.pause();
+					gameState.restartLevel();
+					gameState.setSituation(GameSituation.Starting);
+					try {
+						Thread.sleep(800);
+					} catch (Exception e) {}
+					this.resume();
+					break;
+				case CompletedLevel:
+					this.pause();
+					gameState.loadLevel(gameState.getLevelNum()+1);
+					gameState.setSituation(GameSituation.Starting);
+					try {
+						Thread.sleep(800);
+					} catch (Exception e) {}
+					this.resume();
+					break;
+				case CompletedGame:
+					this.pause();
+					break;
+				case GameOver:
+					this.pause();
+					break;
+				}
+				try {
+					gameState.getSnake().update(time, gameState);
+					gameState.getFood().update(time, gameState);
+					for (Wall w : gameState.getWalls()) {
+						w.update(time, gameState);
+					}
+					for (MovingWall w : gameState.getMovingWalls()) {
+						w.update(time, gameState);
+					}
+					for (PowerUp p : gameState.getPowerUps()) {
+						p.update(time, gameState);
+					}
+					gameState.getPortal().update(time, gameState);
+				} catch(SnakeHitSelfException e) {
+				} catch(Exception e) {}
+			}
 		}
-		s = gameState.getSituation();
-		switch (s) {
-			case Starting:
-				this.pause();
-				try {
-					Thread.sleep(800);
-				} catch (Exception e) {}
-				gameState.setSituation(GameSituation.Playing);
-				this.resume();
-				break;
-			case Dead:
-				this.pause();
-				gameState.restartLevel();
-				gameState.setSituation(GameSituation.Starting);
-				try {
-					Thread.sleep(800);
-				} catch (Exception e) {}
-				this.resume();
-				break;
-			case CompletedLevel:
-				this.pause();
-				gameState.loadLevel(gameState.getLevelNum()+1);
-				gameState.setSituation(GameSituation.Starting);
-				try {
-					Thread.sleep(800);
-				} catch (Exception e) {}
-				this.resume();
-				break;
-			case CompletedGame:
-				this.pause();
-				break;
-			case GameOver:
-				this.pause();
-				break;
-		}
-		try {
-			gameState.getSnake().update(time, gameState);
-			gameState.getFood().update(time, gameState);
-			for (Wall w : gameState.getWalls()) {
-				w.update(time, gameState);
-			}
-			for (MovingWall w : gameState.getMovingWalls()) {
-				w.update(time, gameState);
-			}
-			for (PowerUp p : gameState.getPowerUps()) {
-				p.update(time, gameState);
-			}
-			gameState.getPortal().update(time, gameState);
-		} catch(SnakeHitSelfException e) {
-		} catch(Exception e) {}
 	}
 
 	@Override
 	public void handleInput() {
 		// TODO Auto-generated method stub
-	}
-	
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		gameState.getSnake().grow(1);
-		return super.onTouchEvent(event);
 	}
 	
 	protected SensorEventListener myListener = new SensorEventListener() {

@@ -2,9 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context=".MainActivity" >
+    tools:context=".GameActivity" >
 
-    <oc.snake.game.SnakeGame
+    <oc.snake.game.SnakeGameView
         android:id="@+id/VIEW1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

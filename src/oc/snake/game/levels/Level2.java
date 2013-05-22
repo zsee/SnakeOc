@@ -9,7 +9,7 @@ public class Level2 implements Level {
 	protected Rect[] walls = {
 			new Rect(150,150,	155,800),
 			new Rect(150,0,		155,50),
-			new Rect(1000,0,	1015,400),
+			new Rect(1000,0,	1011,400),
 			new Rect(300,300,	400,400)
 	};
 	

@@ -1,12 +1,12 @@
 package oc.snake;
 
-import oc.snake.game.SnakeGame;
+import oc.snake.game.SnakeGameView;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 
-public class MainActivity extends Activity {
-	private SnakeGame view;
+public class GameActivity extends Activity {
+	private SnakeGameView view;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -15,15 +15,10 @@ public class MainActivity extends Activity {
 		//requestWindowFeature(Window.FEATURE_NO_TITLE);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         //                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		view = (SnakeGame) findViewById(R.id.VIEW1);
+		view = (SnakeGameView) findViewById(R.id.VIEW1);
+		int level = getIntent().getIntExtra("LEVEL", 1);
+		view.setLevel(level);
 		view.start();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
 	}
 	
 	@Override

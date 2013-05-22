@@ -29,11 +29,13 @@ public class Ghost extends PowerUp {
 			// default + surround + gate
 			if (i > 4) {
 				w.setSnakeHitDetection(false);
+				w.getPaint().setAlpha(120);
 			}
 			i++;
 		}
 		for (Wall w : state.getMovingWalls()) {
 			w.setSnakeHitDetection(false);
+			w.getPaint().setAlpha(120);
 		}
 	}
 
@@ -45,9 +47,11 @@ public class Ghost extends PowerUp {
 	public void onEffectTerminated(long time, SnakeGameState state) {
 		for (Wall w : state.getWalls()) {
 			w.setSnakeHitDetection(true);
+			w.getPaint().setAlpha(255);
 		}
 		for (Wall w : state.getMovingWalls()) {
 			w.setSnakeHitDetection(true);
+			w.getPaint().setAlpha(255);
 		}
 	}
 

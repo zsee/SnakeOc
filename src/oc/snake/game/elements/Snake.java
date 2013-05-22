@@ -28,10 +28,14 @@ public class Snake extends Drawable
 		int i;
 		SnakeElement n;
 		for (i=0; i<size; i++) {
-			n = new SnakeElement();
+			if (i==size-1) {
+				n = new SnakeHead();
+			} else {
+				n = new SnakeElement();
+			}
 			n.setBeforePoint(new Vector2D(position.x-size+i*30, position.y));
 			elements.add(n);
-		}
+		}		
 		try {
 			update(0, this);
 		} catch (Exception ex) {

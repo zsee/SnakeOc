@@ -5,16 +5,16 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-abstract public class Game extends ImageView implements Runnable {
+abstract public class GameView extends ImageView implements Runnable {
 
 	protected GameTimer timer = new GameTimer();
 	protected Thread thread = new Thread(this);
 	
-	public Game(Context context) {
+	public GameView(Context context) {
 		super(context);
 	}
 	
-	public Game(Context context, AttributeSet atr) {
+	public GameView(Context context, AttributeSet atr) {
 		super(context, atr);
 	}
 	
