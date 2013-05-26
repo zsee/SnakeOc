@@ -1,7 +1,7 @@
 package oc.snake.game.elements;
 
 import oc.snake.R;
-import oc.snake.game.SnakeGameState;
+import oc.snake.game.state.PlayState;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,7 +19,7 @@ public class SnakeHead extends SnakeElement {
 	@Override
 	public void update(long time, Object state) {
 		if (context == null) {
-			context = ((SnakeGameState)state).getContext();
+			context = ((PlayState)state).getContext();
 		}
 		super.update(time, state);
 	}

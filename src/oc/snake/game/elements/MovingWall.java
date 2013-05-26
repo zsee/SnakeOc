@@ -1,8 +1,8 @@
 package oc.snake.game.elements;
 
 import android.graphics.Rect;
-import oc.snake.game.Updateable;
-import oc.snake.game.Vector2D;
+import oc.snake.gamebase.Updateable;
+import oc.snake.gamebase.Vector2D;
 
 public class MovingWall extends Wall implements Updateable {
 	
@@ -31,7 +31,7 @@ public class MovingWall extends Wall implements Updateable {
 	}
 
 	@Override
-	public void update(long elapsedTime, Object gameState) throws Exception {
+	public void update(long elapsedTime, Object gameState) {
 		super.update(elapsedTime, gameState);
 		float d = (float) (elapsedTime / 1000.0);
 		float dx = speed.x * d;

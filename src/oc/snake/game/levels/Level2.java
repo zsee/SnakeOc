@@ -1,8 +1,8 @@
 package oc.snake.game.levels;
 
-import oc.snake.game.SnakeGameState;
 import oc.snake.game.elements.MovingWall;
 import oc.snake.game.elements.Wall;
+import oc.snake.game.state.PlayState;
 import android.graphics.Rect;
 
 public class Level2 implements Level {
@@ -13,7 +13,7 @@ public class Level2 implements Level {
 			new Rect(300,300,	400,400)
 	};
 	
-	protected void addMovingWalls(SnakeGameState s) {
+	protected void addMovingWalls(PlayState s) {
 		s.setNumFood(2);
 		s.getSnake().setSpeed(150);
 		s.getSnake().grow();
@@ -31,7 +31,7 @@ public class Level2 implements Level {
 		s.getMovingWalls().add(w);
 	}
 	
-	public void applyTo(SnakeGameState s) {
+	public void applyTo(PlayState s) {
 		for (Rect r : walls) {
 			Wall w = new Wall(r);
 			s.getWalls().add(w);

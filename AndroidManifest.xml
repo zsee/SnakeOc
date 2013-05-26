@@ -23,17 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".StartGame"
-            android:label="@string/title_activity_start_game"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

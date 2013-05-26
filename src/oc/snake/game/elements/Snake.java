@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oc.snake.game.Collidable;
-import oc.snake.game.SnakeGameState;
-import oc.snake.game.Updateable;
-import oc.snake.game.Vector2D;
-import oc.snake.game.exceptions.SnakeHitSelfException;
+import oc.snake.game.state.PlayState;
+import oc.snake.gamebase.Updateable;
+import oc.snake.gamebase.Vector2D;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Rect;
@@ -39,7 +38,7 @@ public class Snake extends Drawable
 		try {
 			update(0, this);
 		} catch (Exception ex) {
-			Log.i("snake","Error on init");
+			Log.i("Snake","Error on init:" + ex.getMessage());
 		}
 	}
 	
@@ -110,7 +109,7 @@ public class Snake extends Drawable
 	}
 	
 	@Override
-	public void update(long elapsedTime, Object gameState) throws SnakeHitSelfException {
+	public void update(long elapsedTime, Object gameState) {
 		SnakeElement b,c;
 		Rect headbox;
 		direction.normalize();
@@ -126,7 +125,7 @@ public class Snake extends Drawable
 			c.setBeforePoint(b.getPosition());
 			//c.update(elapsedTime);
 			if (Rect.intersects(headbox,c.getBoundingBox()) && elapsedTime != 0) {
-				((SnakeGameState)gameState).hitWall();
+				((PlayState)gameState).hitWall();
 			}
 			b = c;
 		}

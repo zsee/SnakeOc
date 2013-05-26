@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import oc.snake.game.Collidable;
-import oc.snake.game.SnakeGameState;
-import oc.snake.game.Updateable;
-import oc.snake.game.Vector2D;
+import oc.snake.game.state.PlayState;
+import oc.snake.gamebase.Updateable;
+import oc.snake.gamebase.Vector2D;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
@@ -50,7 +50,7 @@ public class Food extends Drawable implements Collidable, Updateable {
 		return generatedPosition;
 	}
 	
-	public void eat(SnakeGameState s) {
+	public void eat(PlayState s) {
 		eatTime = 0;
 		position.set(-100,-100);
 		Snake snake = s.getSnake();
@@ -59,7 +59,7 @@ public class Food extends Drawable implements Collidable, Updateable {
 		reposition(s);
 	}
 	
-	public void reposition(SnakeGameState s) {
+	public void reposition(PlayState s) {
 		// calculate new position for food, but do not place it on top of the walls or the snake
 		Snake snake = s.getSnake();
 		List<Rect> a = new LinkedList<Rect>();
@@ -85,10 +85,10 @@ public class Food extends Drawable implements Collidable, Updateable {
 	}
 	
 	@Override
-	public void update(long elapsedTtime, Object gameState) throws Exception {
+	public void update(long elapsedTtime, Object gameState) {
 		if (eatTime > appearTime) {
 			position.set(generatedPosition);
-			SnakeGameState state = (SnakeGameState) gameState;
+			PlayState state = (PlayState) gameState;
 			Rect snakeHead = state.getSnake().getHead().getBoundingBox();
 			if (Rect.intersects(snakeHead, getBoundingBox())) {
 				state.pickUpFood();

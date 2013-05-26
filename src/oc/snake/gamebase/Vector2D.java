@@ -1,4 +1,4 @@
-package oc.snake.game;
+package oc.snake.gamebase;
 
 import android.graphics.Point;
 import android.graphics.PointF;

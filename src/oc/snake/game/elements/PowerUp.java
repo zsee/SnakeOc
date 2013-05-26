@@ -1,6 +1,6 @@
 package oc.snake.game.elements;
 
-import oc.snake.game.SnakeGameState;
+import oc.snake.game.state.PlayState;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -66,11 +66,11 @@ abstract public class PowerUp extends Food {
 	
 	abstract public Bitmap getBitmap();
 	
-	abstract public void onEat(long time, SnakeGameState state);
+	abstract public void onEat(long time, PlayState state);
 	
-	abstract public void updateActive(long time, SnakeGameState state);
+	abstract public void updateActive(long time, PlayState state);
 	
-	abstract public void onEffectTerminated(long time, SnakeGameState state);
+	abstract public void onEffectTerminated(long time, PlayState state);
 	
 	public PowerUpState getPowerUpState() {
 		if (!shown && !eaten) {
@@ -88,7 +88,7 @@ abstract public class PowerUp extends Food {
 	
 	@Override
 	public void update(long time, Object state) {
-		SnakeGameState gameState = (SnakeGameState) state;
+		PlayState gameState = (PlayState) state;
 		if (context == null) {
 			context = gameState.getContext();
 		}

@@ -5,9 +5,9 @@ import java.util.List;
 
 import oc.snake.R;
 import oc.snake.game.Collidable;
-import oc.snake.game.SnakeGameState;
-import oc.snake.game.Updateable;
-import oc.snake.game.Vector2D;
+import oc.snake.game.state.PlayState;
+import oc.snake.gamebase.Updateable;
+import oc.snake.gamebase.Vector2D;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -148,8 +148,8 @@ public class Wall extends Drawable
 	}
 
 	@Override
-	public void update(long elapsedTtime, Object gameState) throws Exception {
-		SnakeGameState state = (SnakeGameState) gameState;
+	public void update(long elapsedTtime, Object gameState) {
+		PlayState state = (PlayState) gameState;
 		if (context == null) {
 			context = state.getContext();
 			horizontalBrick = BitmapFactory.decodeResource(context.getResources(), R.drawable.wallh);

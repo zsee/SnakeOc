@@ -1,7 +1,7 @@
 package oc.snake.game.elements;
 
 import oc.snake.R;
-import oc.snake.game.SnakeGameState;
+import oc.snake.game.state.PlayState;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -22,7 +22,7 @@ public class Ghost extends PowerUp {
 	}
 
 	@Override
-	public void onEat(long time, SnakeGameState state) {
+	public void onEat(long time, PlayState state) {
 		int i = 0;
 		for (Wall w : state.getWalls()) {
 			// for non default walls
@@ -40,11 +40,11 @@ public class Ghost extends PowerUp {
 	}
 
 	@Override
-	public void updateActive(long time, SnakeGameState state) {
+	public void updateActive(long time, PlayState state) {
 	}
 
 	@Override
-	public void onEffectTerminated(long time, SnakeGameState state) {
+	public void onEffectTerminated(long time, PlayState state) {
 		for (Wall w : state.getWalls()) {
 			w.setSnakeHitDetection(true);
 			w.getPaint().setAlpha(255);

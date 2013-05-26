@@ -1,35 +1,34 @@
 package oc.snake;
 
-import oc.snake.game.SnakeGameView;
-import android.app.Activity;
+import oc.snake.game.state.MainGameState;
+import oc.snake.gamebase.GameContainerView;
+import oc.snake.gamebase.GameView;
 import android.os.Bundle;
-import android.view.Menu;
 
-public class GameActivity extends Activity {
-	private SnakeGameView view;
-
+public class GameActivity extends oc.snake.gamebase.GameActivity {
+	private MainGameState gameState = new MainGameState();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		//requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
-        //                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		view = (SnakeGameView) findViewById(R.id.VIEW1);
-		int level = getIntent().getIntExtra("LEVEL", 1);
-		view.setLevel(level);
-		view.start();
+		gameState.activity = this;
+		gameState.playState.setContext(this);
+		gameState.timer = this.timer;
 	}
-	
+
 	@Override
-	public void onPause() {
-		super.onPause();
-		//view.pause();
+	protected Object getGameState() {
+		return gameState;
 	}
-	
+
 	@Override
-	public void onResume() {
-		super.onResume();
-		//view.resume();
+	protected GameContainerView getContainerView() {
+		return (GameContainerView) findViewById(R.id.VIEW1);
+	}
+
+	@Override
+	protected GameView activeView() {
+		return gameState.getActiveView();
 	}
 }

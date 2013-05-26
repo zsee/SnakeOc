@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     tools:context=".GameActivity" >
 
-    <oc.snake.game.SnakeGameView
+    <oc.snake.gamebase.GameContainerView
         android:id="@+id/VIEW1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

@@ -1,4 +1,4 @@
-package oc.snake.game;
+package oc.snake.gamebase;
 
 public enum GameTimerState {
 	Running,

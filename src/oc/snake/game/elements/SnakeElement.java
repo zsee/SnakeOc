@@ -4,8 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import oc.snake.game.Collidable;
-import oc.snake.game.Updateable;
-import oc.snake.game.Vector2D;
+import oc.snake.gamebase.Updateable;
+import oc.snake.gamebase.Vector2D;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;

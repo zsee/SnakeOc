@@ -1,4 +1,4 @@
-package oc.snake.game;
+package oc.snake.game.state;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +12,11 @@ import oc.snake.game.elements.Snake;
 import oc.snake.game.elements.Wall;
 import oc.snake.game.levels.Level;
 import oc.snake.game.levels.LevelFactory;
+import oc.snake.gamebase.Vector2D;
 import android.content.Context;
 import android.graphics.Rect;
 
-public class SnakeGameState {
+public class PlayState {
 	protected Snake snake;
 	protected List<Wall> walls = new ArrayList<Wall>();
 	protected List<MovingWall> movingWalls = new ArrayList<MovingWall>();

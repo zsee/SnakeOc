@@ -2,15 +2,19 @@ package oc.snake.game.elements;
 
 import java.util.List;
 
+import oc.snake.R;
 import oc.snake.game.Collidable;
-import oc.snake.game.SnakeGameState;
-import oc.snake.game.Updateable;
-import oc.snake.game.Vector2D;
+import oc.snake.game.state.PlayState;
+import oc.snake.gamebase.Updateable;
+import oc.snake.gamebase.Vector2D;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 public class Portal extends Drawable
 	implements
@@ -20,9 +24,11 @@ public class Portal extends Drawable
 	protected int radius = 30;
 	protected Vector2D position = new Vector2D(1242, 762);
 	protected Paint paint = new Paint();
+	protected Bitmap bmp = null;
 	
 	public Portal() {
-		paint.setARGB(255, 0, 0, 180);
+		//paint.setARGB(255, 0, 0, 180);
+		paint.setAntiAlias(true);
 	}
 	
 	
@@ -51,8 +57,9 @@ public class Portal extends Drawable
 
 	@Override
 	public void draw(Canvas c) {
-		c.drawCircle(position.x, position.y, radius, paint);
-		//c.drawRect(getBoundingBox(), paint);
+		if (bmp != null) {
+			c.drawBitmap(bmp, position.x - radius, position.y - radius, paint);
+		}
 	}
 
 	@Override
@@ -75,11 +82,14 @@ public class Portal extends Drawable
 
 
 	@Override
-	public void update(long elapsedTtime, Object gameState) throws Exception {
-		Snake snake = ((SnakeGameState)gameState).getSnake();
+	public void update(long elapsedTtime, Object gameState) {
+		Snake snake = ((PlayState)gameState).getSnake();
+		if (bmp == null) {
+			bmp = BitmapFactory.decodeResource(((PlayState)gameState).getContext().getResources(), R.drawable.portal);
+		}
 		Rect r = snake.getHead().getBoundingBox();
 		if (Rect.intersects(r, getBoundingBox()) ) {
-			((SnakeGameState)gameState).finishLevel();
+			((PlayState)gameState).finishLevel();
 		}
 	}
 

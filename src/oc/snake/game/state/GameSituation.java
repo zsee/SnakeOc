@@ -1,4 +1,4 @@
-package oc.snake.game;
+package oc.snake.game.state;
 
 public enum GameSituation {
 	AtMenu,
